@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transaction Entry Page</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    .transaction-container {
+      max-width: 600px;
+      margin: auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .transaction-container h2 {
+      margin-bottom: 20px;
+    }
+    .form-control {
+      margin-bottom: 10px;
+    }
+    .btn-custom {
+      background-color: #6f42c1;
+      color: #fff;
+    }
+    .navbar { background-color: #6c5ce7; }
+    .navbar-brand { font-size: 1.5rem; }
+    .nav-link { color: white; }
+  </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark">
+  <a class="navbar-brand" href="#">Finance Tracker</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item active">
+        <a class="nav-link" href="/user/Dashboard">Home</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<div class="transaction-container mt-5">
+  <h2 class="text-center">Add New Transaction</h2>
+  <form th:action="@{/user/EnteredTrans}" th:object="${transaction}" method="post">
+  <input type="hidden" th:field="*{id}"/>
+    <div class="form-group">
+      <label for="amount">Amount</label>
+      <input type="number" class="form-control" id="amount" name="amount" placeholder="Enter amount" th:field="*{amount}">
+      <p class="text-danger" th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}"></p>
+    </div>
+    <div class="form-group">
+      <label for="description">Description</label>
+      <input type="text" class="form-control" id="description" name="description" placeholder="Enter description" th:field="*{description}">
+      <p class="text-danger" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></p>
+    </div>
+    <div class="form-group">
+      <label for="transaction-date">Transaction Date</label>
+      <input type="date" class="form-control" id="transaction-date" name="transactionDate" th:field="*{transactionDate}">
+      <p class="text-danger" th:if="${#fields.hasErrors('transactionDate')}" th:errors="*{transactionDate}"></p>
+    </div>
+    <div class="form-group">
+      <label for="type">Type</label>
+      <select class="form-control" id="type" name="type" th:field="*{type}">
+        <option value="Income">Income</option>
+        <option value="Expense">Expense</option>
+      </select>
+      <p class="text-danger" th:if="${#fields.hasErrors('type')}" th:errors="*{type}"></p>
+    </div>
+    <div class="form-group">
+      <label for="category">Category</label>
+      <select class="form-control" id="category" name="category" th:field="*{category}">
+        <option th:each="category : ${categories}" th:value="${category.name}" th:text="${category.name}"></option>
+      </select>
+      <p class="text-danger" th:if="${#fields.hasErrors('category')}" th:errors="*{category}"></p>
+    </div>
+    <div class="d-flex justify-content-between">
+      <button type="submit" class="btn btn-custom">Submit</button>
+      <button type="button" class="btn btn-secondary" onclick="handleCancel()">Cancel</button>
+    </div>
+  </form>
+
+  <script>
+    function handleCancel() {
+      window.location.href = '/user/Dashboard';
+    }
+  </script>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

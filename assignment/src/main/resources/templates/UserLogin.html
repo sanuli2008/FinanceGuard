@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Login Page</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .login-container {
+            max-width: 400px;
+            margin: auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .login-container h2 {
+            margin-bottom: 20px;
+        }
+        .form-control {
+            margin-bottom: 10px;
+        }
+        .btn-custom {
+            background-color: #6f42c1;
+            color: #fff;
+        }
+        .signup-text {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .signup-link {
+            color: red;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .signup-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<div class="login-container mt-5">
+    <h2 class="text-center">User Login</h2>
+    <p class="text-center">Please enter your credentials to log in.</p>
+    <div th:if="${error}" class="alert alert-danger" role="alert">
+        <p th:text="${error}"></p>
+    </div>
+
+    <form method="post" action="/user/loggedIn" th:object="${user}">
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" class="form-control" id="username" name="username" placeholder="Enter username" th:field="*{username}">
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" class="form-control" id="password" name="password" placeholder="Enter password" th:field="*{password}">
+        </div>
+        <button type="submit" class="btn btn-custom btn-block">Login</button>
+    </form>
+
+    <div class="signup-text">
+        <p>Haven't signed up yet? <a href="/user/Registration" class="signup-link">Sign Up</a></p>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

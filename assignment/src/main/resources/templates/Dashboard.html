@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FinanceGuard Dashboard</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f5f5f5;
+      color: #333;
+    }
+
+    .sidebar {
+      height: 100vh;
+      background-color: #ffffff;
+      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+      padding-top: 20px;
+      font-size: 18px;
+    }
+
+    .sidebar h2 {
+      font-size: 20px;
+      margin-left: 20px;
+      color: #4b7bec;
+      font-weight: bold;
+    }
+
+    .sidebar .nav-link {
+      color: #333;
+      font-weight: 500;
+      padding: 10px 20px;
+      border-left: 4px solid transparent;
+    }
+
+    .sidebar .nav-link.active,
+    .sidebar .nav-link:hover {
+      background-color: #f0f0f0;
+      border-left-color: #4b7bec;
+      color: #4b7bec;
+    }
+
+    .main-content {
+      padding: 30px;
+      background-color: #f9f9f9;
+    }
+
+    .header {
+      margin-bottom: 20px;
+      border-bottom: 1px solid #e6e6e6;
+      padding-bottom: 10px;
+      display: flex;
+      align-items: center;
+    }
+
+    .header img {
+      height: 50px;
+      width: 50px;
+      border-radius: 50%;
+      margin-right: 15px;
+    }
+
+    .header h1 {
+      font-size: 24px;
+      color: #4b7bec;
+      font-weight: bold;
+    }
+
+    .summary {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      font-size: 20px;
+    }
+
+    .summary-item {
+      color: #333;
+      font-size: 18px;
+    }
+
+    .summary-item span {
+      font-weight: bold;
+    }
+
+    .summary-item .income {
+      color: green;
+    }
+
+    .summary-item .expenses {
+      color: red;
+    }
+
+    .table-container {
+      margin-top: 20px;
+    }
+
+    table {
+      background-color: #ffffff;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+
+    th {
+      background-color: #f1f1f1;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .btn-view {
+      color: white;
+      background-color: #4b7bec;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      text-align: center;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .btn-view:hover {
+      background-color: #3867d6;
+    }
+
+    .user-profile {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      display: flex;
+      align-items: center;
+    }
+
+    .user-profile img {
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+
+    .user-name {
+      font-size: 16px;
+      color: #333;
+      font-weight: 500;
+    }
+
+    .chart-container {
+      margin-top: 20px;
+      max-width: 400px;
+      margin: auto;
+    }
+
+    #categoryChart {
+      max-height: 300px;
+    }
+
+    /* Upper navigation bar styling */
+    .navbar {
+      background-color: #003366; /* Dark blue background */
+      padding-top: 15px; /* Increased padding for height */
+      padding-bottom: 15px; /* Increased padding for height */
+    }
+
+    .navbar .nav-link {
+      color: white !important;
+      font-size: 18px; /* Increased font size */
+    }
+
+    .navbar .nav-link.active {
+      background-color: #1a5276;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+
+<body>
+<div class="container-fluid">
+  <div class="row">
+    <!-- Sidebar -->
+    <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+      <h2>FinanceGuard</h2>
+      <ul class="nav flex-column mt-4">
+        <li class="nav-item">
+          <a class="nav-link active" href="/user/Dashboard">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" id="transactionsMenu">Transactions</a>
+          <ul class="nav flex-column ml-3" id="transactionsSubMenu">
+            <li class="nav-item">
+              <a class="nav-link" href="/user/TransactionEntry">Add Transaction</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/user/TransactionHistory">Transaction History</a>
+            </li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/user/ManageCategories">Categories</a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="col-md-10 ml-sm-auto col-lg-10 px-4 main-content">
+      <!-- Upper Navigation Bar -->
+      <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link active" href="/user/Dashboard">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/user/TransactionEntry">Add Transaction</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/user/TransactionHistory">Transaction History</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/user/ManageCategories">Categories</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <div class="header">
+        <img src="/images/img.png" alt="FinanceGuard Logo">
+        <h1>Finance Guard</h1>
+      </div>
+      <div class="summary">
+        <div class="summary-item">
+          <span class="income">Total Income: $<span th:text="${totalIncome}">0</span></span>
+        </div>
+        <div class="summary-item">
+          <span class="expenses">Total Expenses: $<span th:text="${totalExpenses}">0</span></span>
+        </div>
+      </div>
+
+      <!-- Pie Chart Container -->
+      <div class="chart-container">
+        <h2>Income vs Expenses</h2>
+        <canvas id="categoryChart" width="400" height="400"></canvas>
+      </div>
+      <script>
+        document.addEventListener('DOMContentLoaded', function () {
+          const totalIncome = parseFloat([[${totalIncome}]]);
+          const totalExpenses = parseFloat([[${totalExpenses}]]);
+
+          console.log('Total Income:', totalIncome);
+          console.log('Total Expenses:', totalExpenses);
+
+          const ctx = document.getElementById('categoryChart').getContext('2d');
+
+          new Chart(ctx, {
+            type: 'pie',
+            data: {
+              labels: ['Total Income', 'Total Expenses'],
+              datasets: [{
+                label: 'Income vs Expenses',
+                data: [totalIncome, totalExpenses],
+                backgroundColor: ['#36A2EB', '#FF6384'],
+              }]
+            },
+            options: {
+              responsive: true,
+              plugins: {
+                legend: {
+                  position: 'top',
+                },
+                tooltip: {
+                  callbacks: {
+                    label: function (tooltipItem) {
+                      return tooltipItem.label + ': $' + tooltipItem.raw.toFixed(2);
+                    }
+                  }
+                }
+              }
+            }
+          });
+        });
+      </script>
+
+      <div class="table-container">
+        <h2>Recent Transactions</h2>
+        <table class="table table-striped">
+          <thead>
+          <tr>
+            <th>Date</th>
+            <th>Description</th>
+            <th>Amount</th>
+            <th>Type</th>
+            <th>Category</th>
+            <th>Actions</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="transaction : ${transactions}">
+            <td th:text="${transaction.transactionDate}"></td>
+            <td th:text="${transaction.description}"></td>
+            <td th:text="${transaction.amount}"></td>
+            <td th:text="${transaction.type}"></td>
+            <td th:text="${transaction.category}"></td>
+            <td>
+              <a class="btn btn-primary btn-sm" th:href="@{'/user/editTransactionForm/' + ${transaction.id}}">Edit</a>
+              <a class="btn btn-danger btn-sm"
+                 th:href="@{'/user/deleteTrans/' + ${transaction.id}}"
+                 onclick="return confirm('Are you sure you want to delete this transaction?');">Delete</a>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>
